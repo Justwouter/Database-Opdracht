@@ -1,6 +1,6 @@
 namespace DBOpdracht;
 
-public class Coordinaat{
+public class Coordinate{
     public int X;
     public int Y;
 }
