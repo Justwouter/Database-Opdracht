@@ -1,6 +1,6 @@
 ﻿#Easy update script. Use .\dbup {args} or put in PATH
 
-
+#Check if any argument is passed
 if($null -eq $args[0]){
     throw "Please enter a migration name or use the -d parameter for default naming"
 }
@@ -8,7 +8,7 @@ if($null -eq $args[0]){
 $startLocation=Get-Location
 
 try{
-
+    #Get the project path from dotnet and parse to a usable string
     $projectLocation=dotnet sln list
 
     $projectLocationParseFirstResult = $projectLocation -replace '/[^/]*$',""
@@ -16,6 +16,7 @@ try{
 
     Set-Location "$projectLocationParseString"
 
+    #Check if the default parameter is used
     if($args[0] -eq "-d"){
         dotnet ef migrations add
     }
