@@ -7,7 +7,6 @@ public class Gast : Gebruiker{
     public Gast? Begeleidt;
     public Attractie? FavorieteAttractie;
     public GastInfo GastInformatie = new GastInfo();
-
     public Reservering? reservering;
 
     public Gast(string Email) : base(Email){}

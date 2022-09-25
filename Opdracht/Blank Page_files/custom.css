@@ -1,0 +1,44 @@
+/*========= CSS file for client to add custom CSS ==========*/
+.hhs-lesson-page h1 {
+   font-size: 32px;
+   color: #223343;
+   font-weight: bold;
+}
+
+.hhs-lesson-page h2 {
+   color: #9ea700;
+   font-size: 24px;
+   padding-left: 0;
+}
+
+.hhs-lesson-page .h2::after,
+.hhs-lesson-page h2::after {
+   display: none;
+}
+
+.hhs-lesson-page h3 {
+   font-size: 32px;
+   color: #223343;
+   text-decoration: underline;
+}
+
+.hhs-lesson-page table {
+   border-collapse: collapse;
+   width: 94.941%;
+   border-color: #9ea700;
+   border-style: solid;
+   border-width: 2px;
+   height: 562px;
+}
+.hhs-lesson-page table tr td {
+   min-height: 188px;
+   border-color: #9ea700;
+   border-style: solid;
+   border-width: 2px;
+}
+.hhs-lesson-page table tr td p:first-child {
+   margin-bottom: 0;
+}
+.hhs-lesson-page table tr td ul li, table tr td p {
+   font-size: 16px;
+}
