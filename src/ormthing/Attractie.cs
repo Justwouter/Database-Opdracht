@@ -16,10 +16,10 @@ public class Attractie{
     }
 
     public async Task<bool> Vrij(DatabaseContext c, DateTimeBereik d){
-
-        if(await OnderhoudBezigOpTijdstip(c,d))
-        
-
+        if(await OnderhoudBezigOpTijdstip(c,d) || await ReservatieOpTijdstip(c,d)){
+            return false;
+        }
+        return true;
     }
 
     private async Task<bool> OnderhoudBezigOpTijdstip(DatabaseContext c, DateTimeBereik dt){
