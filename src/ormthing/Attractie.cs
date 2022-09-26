@@ -1,6 +1,7 @@
 namespace DBOpdracht;
 
 public class Attractie{
+    public int Id {get;set;}
     public String Naam;
 
     public List<Onderhoud> OnderhoudPunten = new List<Onderhoud>();
