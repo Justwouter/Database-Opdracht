@@ -30,13 +30,13 @@ class DemografischRapport : Rapport
 
         return ret;
     }
-    private async Task<int> AantalGebruikers() => context.Guests.Count();
-    private async Task<bool> AlleGastenHebbenReservering() => context.Guests.Where<Gast>(gast=> gast.reservering.Count() > 0).Count() == context.Guests.Count(); //Incredibly slow.
-    private async Task<int> AantalSinds(DateTime sinds) => /* ... */;
-    private async Task<Gast> GastBijEmail(string email) => /* ... */;
-    private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => /* ... */;
-    private async Task<double> PercentageBejaarden() => /* ... */;
-    private async Task<int> HoogsteLeeftijd() => /* ... */;
+    private async Task<int> AantalGebruikers() => context.Users.Count();
+    private async Task<bool> AlleGastenHebbenReservering() => context.Guests.Where<Gast>(gast => gast.reservering.Count() > 0).Count() == context.Guests.Count(); //Incredibly slow.
+    private async Task<int> AantalSinds(DateTime sinds) => context.Guests.Where<Gast>(gast => gast.EersteBezoek > sinds).Count();
+    private async Task<Gast> GastBijEmail(string email) => context.Guests.First<Gast>(gast => gast.Email == email); 
+    private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => context.Guests.First<Gast>(gast => gast.GeboorteDatum == d);
+    private async Task<double> PercentageBejaarden() => (context.Guests.Where<Gast>(gast => (EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)>65).Count()/await AantalGebruikers())*100;
+    private async Task<int> HoogsteLeeftijd() => context.Guests.Select(gast => (EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Min();
     private async Task<(string dag, int aantal)[]> VerdelingPerDag() => /* ... */;
     private async Task<int> FavorietCorrect() => /* ... */; 
 }
