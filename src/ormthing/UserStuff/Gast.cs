@@ -7,10 +7,12 @@ public class Gast : Gebruiker{
     public int Credits;
     public Gast? Begeleider;
     public Attractie? FavorieteAttractie;
-    public GastInfo GastInformatie = new GastInfo();
+    public GastInfo GastInformatie;
     public List<Reservering> reservering = new List<Reservering>();
 
-    public Gast(string Email) : base(Email){}
+    public Gast(string Email) : base(Email){
+        this.GastInformatie = new GastInfo(this);
+    }
 
 
     

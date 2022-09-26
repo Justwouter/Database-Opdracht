@@ -1,4 +1,5 @@
 namespace DBOpdracht;
+using Microsoft.EntityFrameworkCore;
 
 class DemografischRapport : Rapport
 {
@@ -29,8 +30,8 @@ class DemografischRapport : Rapport
 
         return ret;
     }
-    private async Task<int> AantalGebruikers() => /* ... */;
-    private async Task<bool> AlleGastenHebbenReservering() => /* ... */;
+    private async Task<int> AantalGebruikers() => context.Guests.Count();
+    private async Task<bool> AlleGastenHebbenReservering() => ;
     private async Task<int> AantalSinds(DateTime sinds) => /* ... */;
     private async Task<Gast> GastBijEmail(string email) => /* ... */;
     private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => /* ... */;

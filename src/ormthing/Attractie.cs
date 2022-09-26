@@ -6,7 +6,7 @@ public class Attractie{
 
     public List<Onderhoud> OnderhoudPunten = new List<Onderhoud>();
 
-    public Reservering reservering;
+    public Reservering? reservering;
 
     public Attractie(String Naam){
         this.Naam = Naam;
