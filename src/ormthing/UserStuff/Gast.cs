@@ -9,7 +9,7 @@ public class Gast : Gebruiker{
     public Attractie? FavorieteAttractie {get;set;}
     public GastInfo GastInformatie;
     public int GastinfoId {get;set;}
-    public List<Reservering> reservering {get;set;}
+    public List<Reservering>? reservering {get;set;}
 
     public Gast(string Email) : base(Email){
         this.GastInformatie = new GastInfo(this);

@@ -2,15 +2,15 @@ namespace DBOpdracht;
 using Microsoft.EntityFrameworkCore;
 
 public class DatabaseContext : DbContext{
+    // (= null!;) Tell the compiler/intelisense to shut up about nullables when not initializing a value 
+    public DbSet<Attractie> Attractions {get;set;} = null!;
+    public DbSet<Onderhoud> Maintenance {get;set;} = null!;
+    public DbSet<Medewerker> Staff {get;set;} = null!;
+    public DbSet<Gebruiker> Users {get;set;} = null!;
+    public DbSet<Gast> Guests {get;set;} = null!;
+    public DbSet<Reservering> Reservations {get;set;} = null!;
+    public DbSet<GastInfo> GuestInfo {get;set;} = null!;
 
-    public DbSet<Attractie> Attractions {get;set;}
-    public DbSet<Onderhoud> Maintenance {get;set;}
-    public DbSet<Medewerker> Staff {get;set;}
-    public DbSet<Gebruiker> Users {get;set;}
-    public DbSet<Gast> Guests {get;set;}
-    public DbSet<Reservering> Reservations {get;set;}
-
-    public DbSet<GastInfo> GuestInfo {get;set;}
     public async Task<bool> Boek(GCNotificationStatus g, Attractie a, DateTimeBereik d){
         return true;
         

@@ -36,6 +36,7 @@ class DemografischRapport : Rapport
     private async Task<Gast> GastBijEmail(string email) => context.Guests.First<Gast>(gast => gast.Email == email); 
     private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => context.Guests.First<Gast>(gast => gast.GeboorteDatum == d);
     private async Task<double> PercentageBejaarden() => ((double)(context.Guests.Where<Gast>(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now)/365.25)>75).Count())/(double)(context.Guests.Count()))*100;
+    //Amount of people older than 75/amount of users times 100 for precentage. Because the initial fraction is < 1 both values need to be cast to double otherwise the method will always return 0.
     private async Task<int> HoogsteLeeftijd() => context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();
     //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
     private async Task<int> FavorietCorrect() => context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();
