@@ -28,6 +28,14 @@
 		"body": [
 				"public DbSet<> $2 {get;set;}"
 		],
-		"description": "Log output to console"
+		"description": "Generic DbSet line"
+	},
+
+	"Efcore Id": {
+		"prefix": ["id","Id","efcID"],
+		"body": [
+				"public int Id {get;set;}"
+		],
+		"description": "Efcore database default Id value"
 	}
 }

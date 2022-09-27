@@ -1,15 +1,17 @@
 namespace DBOpdracht;
 
 public class GastInfo{
+    public int Id {get;set;}
     
     public string LaatstBezochteURL;
-    public Gast gast;
-    public int gastId;
+    public Gast Gast;
     public Coordinate coordinate = new Coordinate();
  
     public GastInfo(Gast gast){
-        this.gast = gast;
+        this.Gast = gast;
     }
+
+    public GastInfo(){}
 
     
 }

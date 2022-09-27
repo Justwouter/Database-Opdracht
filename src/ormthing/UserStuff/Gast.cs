@@ -2,13 +2,14 @@ namespace DBOpdracht;
 
 public class Gast : Gebruiker{
     public int Id {get;set;}
-    public DateTime EersteBezoek;
-    public DateTime GeboorteDatum;
-    public int Credits;
+    public DateTime EersteBezoek {get;set;}
+    public DateTime GeboorteDatum {get;set;}
+    public int Credits {get;set;}
     public Gast? Begeleider;
-    public Attractie? FavorieteAttractie;
+    public Attractie? FavorieteAttractie {get;set;}
     public GastInfo GastInformatie;
-    public List<Reservering> reservering = new List<Reservering>();
+    public int GastinfoId {get;set;}
+    public List<Reservering> reservering {get;set;}
 
     public Gast(string Email) : base(Email){
         this.GastInformatie = new GastInfo(this);

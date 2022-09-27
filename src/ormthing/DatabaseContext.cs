@@ -17,6 +17,9 @@ public class DatabaseContext : DbContext{
     }
 
     protected override void OnModelCreating(ModelBuilder builder){
+        //Attractie
+            var AttractionConfig = builder.Entity<Medewerker>();
+            AttractionConfig.ToTable("Attracties");
         //Medewerker
             var StaffConfig = builder.Entity<Medewerker>();
             StaffConfig.ToTable("Medewerkers");
@@ -37,11 +40,15 @@ public class DatabaseContext : DbContext{
         //Gastinfo
             var GuestInfoconfig = builder.Entity<GastInfo>();
             GuestInfoconfig.OwnsOne(ginfo => ginfo.coordinate);
+            GuestInfoconfig.HasKey(k => k.Id);
+            GuestInfoconfig.HasOne(g => g.Gast).WithOne(gi => gi.GastInformatie).HasForeignKey<Gast>(g => g.GastinfoId); //One to one with Gast/gastinfo?
+
+        
         
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder){
-        builder.UseSqlServer("Server=AORUS-15P-W\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
-        //builder.UseSqlServer("Server=DESKTOP-PRAETOR\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
+        //builder.UseSqlServer("Server=AORUS-15P-W\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
+        builder.UseSqlServer("Server=DESKTOP-PRAETOR\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
     }
 }

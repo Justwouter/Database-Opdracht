@@ -1,6 +1,7 @@
 namespace DBOpdracht;
 
 public class Onderhoud{
+    public int Id {get;set;}
     public string Probleem;
     public DateTimeBereik VindtPlaatsTijdens = new DateTimeBereik();
     public Attractie Target;
@@ -10,4 +11,6 @@ public class Onderhoud{
         this.Probleem = Probleem;
         this.Target = Target;
     }
+
+    public Onderhoud(){}
 }

@@ -21,10 +21,10 @@ class DemografischRapport : Rapport
         ret += $"De oudste gast heeft een leeftijd van { await HoogsteLeeftijd() } \n";
 
         ret += "De verdeling van de gasten per dag is als volgt: \n";
-        var dagAantallen = await VerdelingPerDag();
-        var totaal = dagAantallen.Select(t => t.aantal).Max();
-        foreach (var dagAantal in dagAantallen)
-            ret += $"{ dagAantal.dag }: { new string('#', (int)(dagAantal.aantal / (double)totaal * 20)) }\n";
+        // var dagAantallen = await VerdelingPerDag();
+        // var totaal = dagAantallen.Select(t => t.aantal).Max();
+        // foreach (var dagAantal in dagAantallen)
+        //     ret += $"{ dagAantal.dag }: { new string('#', (int)(dagAantal.aantal / (double)totaal * 20)) }\n";
 
         ret += $"{ await FavorietCorrect() } gasten hebben de favoriete attractie inderdaad het vaakst bezocht. \n";
 
@@ -36,7 +36,9 @@ class DemografischRapport : Rapport
     private async Task<Gast> GastBijEmail(string email) => context.Guests.First<Gast>(gast => gast.Email == email); 
     private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => context.Guests.First<Gast>(gast => gast.GeboorteDatum == d);
     private async Task<double> PercentageBejaarden() => (context.Guests.Where<Gast>(gast => (EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)>65).Count()/await AantalGebruikers())*100;
-    private async Task<int> HoogsteLeeftijd() => context.Guests.Select(gast => (EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Min();
-    private async Task<(string dag, int aantal)[]> VerdelingPerDag() => /* ... */;
-    private async Task<int> FavorietCorrect() => /* ... */; 
+    private async Task<int> HoogsteLeeftijd() => context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Min();
+    //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
+    private async Task<int> FavorietCorrect() => context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();
+    //Check if guests have a favorite, check if they have/had reservations and if so, check if their favorite attraction was included in any reservation.
+    //Currently don't really have a way to monitor if they have visited their favorite the most tho afaik. unless we go of reservations again but that would be annoying and tedious 
 }
