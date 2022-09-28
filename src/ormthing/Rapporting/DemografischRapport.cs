@@ -40,6 +40,7 @@ class DemografischRapport : Rapport
     private async Task<int> HoogsteLeeftijd() => await Task<int>.Run(() => {return context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();});
     //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
     private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.EersteBezoek < DateTime.Now).Count();}); //Just to check
+    
     //private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
     //Check if guests have a favorite, check if they have/had reservations and if so, check if their favorite attraction was included in any reservation.
     //Currently don't really have a way to monitor if they have visited their favorite the most tho afaik. unless we go of reservations again but that would be annoying and tedious 
