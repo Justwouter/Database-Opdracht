@@ -29,19 +29,26 @@ public class DatabaseContext : DbContext{
         //Attractie
             var AttractionConfig = builder.Entity<Attractie>();
             AttractionConfig.ToTable("Attracties");
-            AttractionConfig.OwnsMany(ondr => ondr.OnderhoudPunten);
+            AttractionConfig.HasKey(k => k.Id);
+
         //Onderhoud
             var MaintenanceConfig = builder.Entity<Onderhoud>();
             MaintenanceConfig.ToTable("Onderhoud_taken");
-            MaintenanceConfig.OwnsOne(attr => attr.Target);
+            MaintenanceConfig.HasKey(k => k.Id);
+            MaintenanceConfig.HasOne(attr => attr.Target)
+                .WithMany(maint => maint.OnderhoudPunten)
+                .HasForeignKey(k => k.Id); //one to many with Attractie?
+
         //Medewerker
             var StaffConfig = builder.Entity<Medewerker>();
             StaffConfig.ToTable("Medewerkers");
+
         //Gebruiker
             var UserConfig = builder.Entity<Gebruiker>();
             UserConfig.ToTable("Gebruikers");
             //UserConfig.HasData(new Gebruiker("GaryV2"));
             UserConfig.HasKey(k => k.Email);
+
         //Gast
             var GuestConfig = builder.Entity<Gast>();
             GuestConfig.ToTable("Gasten");
@@ -54,7 +61,9 @@ public class DatabaseContext : DbContext{
             var GuestInfoconfig = builder.Entity<GastInfo>();
             GuestInfoconfig.OwnsOne(ginfo => ginfo.coordinate);
             GuestInfoconfig.HasKey(k => k.Id);
-            GuestInfoconfig.HasOne(g => g.Gast).WithOne(gi => gi.GastInformatie).HasForeignKey<Gast>(g => g.GastinfoId); //One to one with Gast/gastinfo?
+            GuestInfoconfig.HasOne(g => g.Gast)
+                .WithOne(gi => gi.GastInformatie)
+                .HasForeignKey<Gast>(g => g.GastinfoId); //One to one with Gast/gastinfo?
 
         
         

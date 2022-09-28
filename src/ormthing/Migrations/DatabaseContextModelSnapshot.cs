@@ -37,7 +37,7 @@ namespace ormthing.Migrations
 
                     b.HasIndex("ReserveringId");
 
-                    b.ToTable("Attractions");
+                    b.ToTable("Attracties", (string)null);
                 });
 
             modelBuilder.Entity("DBOpdracht.GastInfo", b =>
@@ -66,14 +66,11 @@ namespace ormthing.Migrations
             modelBuilder.Entity("DBOpdracht.Onderhoud", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.HasKey("Id");
 
-                    b.ToTable("Maintenance");
+                    b.ToTable("Onderhoud_taken", (string)null);
                 });
 
             modelBuilder.Entity("DBOpdracht.Reservering", b =>
@@ -161,6 +158,17 @@ namespace ormthing.Migrations
                     b.Navigation("coordinate");
                 });
 
+            modelBuilder.Entity("DBOpdracht.Onderhoud", b =>
+                {
+                    b.HasOne("DBOpdracht.Attractie", "Target")
+                        .WithMany("OnderhoudPunten")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Target");
+                });
+
             modelBuilder.Entity("DBOpdracht.Reservering", b =>
                 {
                     b.HasOne("DBOpdracht.Gast", "gast")
@@ -218,6 +226,11 @@ namespace ormthing.Migrations
                         .HasForeignKey("DBOpdracht.Medewerker", "Email")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DBOpdracht.Attractie", b =>
+                {
+                    b.Navigation("OnderhoudPunten");
                 });
 
             modelBuilder.Entity("DBOpdracht.GastInfo", b =>

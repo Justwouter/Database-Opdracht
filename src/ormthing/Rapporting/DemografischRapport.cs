@@ -39,7 +39,8 @@ class DemografischRapport : Rapport
     //Amount of people older than 75/amount of users times 100 for precentage. Because the initial fraction is < 1 both values need to be cast to double otherwise the method will always return 0.
     private async Task<int> HoogsteLeeftijd() => await Task<int>.Run(() => {return context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();});
     //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
-    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
+    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.EersteBezoek < DateTime.Now).Count();}); //Just to check
+    //private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
     //Check if guests have a favorite, check if they have/had reservations and if so, check if their favorite attraction was included in any reservation.
     //Currently don't really have a way to monitor if they have visited their favorite the most tho afaik. unless we go of reservations again but that would be annoying and tedious 
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -8,18 +9,6 @@ namespace ormthing.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Attractions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Attractions", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Gebruikers",
                 columns: table => new
@@ -44,18 +33,6 @@ namespace ormthing.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Maintenance",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Maintenance", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Medewerkers",
                 columns: table => new
                 {
@@ -72,16 +49,38 @@ namespace ormthing.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Attracties",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ReserveringId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attracties", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Gasten",
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
+                    EersteBezoek = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    GeboorteDatum = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Credits = table.Column<int>(type: "int", nullable: false),
+                    FavorieteAttractieId = table.Column<int>(type: "int", nullable: true),
                     GastinfoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Gasten", x => x.Email);
+                    table.ForeignKey(
+                        name: "FK_Gasten_Attracties_FavorieteAttractieId",
+                        column: x => x.FavorieteAttractieId,
+                        principalTable: "Attracties",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Gasten_Gebruikers_Email",
                         column: x => x.Email,
@@ -91,6 +90,23 @@ namespace ormthing.Migrations
                         name: "FK_Gasten_GuestInfo_GastinfoId",
                         column: x => x.GastinfoId,
                         principalTable: "GuestInfo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Onderhoud_taken",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Onderhoud_taken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Onderhoud_taken_Attracties_Id",
+                        column: x => x.Id,
+                        principalTable: "Attracties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -116,6 +132,16 @@ namespace ormthing.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attracties_ReserveringId",
+                table: "Attracties",
+                column: "ReserveringId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Gasten_FavorieteAttractieId",
+                table: "Gasten",
+                column: "FavorieteAttractieId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Gasten_GastinfoId",
                 table: "Gasten",
                 column: "GastinfoId",
@@ -126,24 +152,35 @@ namespace ormthing.Migrations
                 name: "IX_Reservations_gastEmail",
                 table: "Reservations",
                 column: "gastEmail");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Attracties_Reservations_ReserveringId",
+                table: "Attracties",
+                column: "ReserveringId",
+                principalTable: "Reservations",
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Attractions");
-
-            migrationBuilder.DropTable(
-                name: "Maintenance");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Attracties_Reservations_ReserveringId",
+                table: "Attracties");
 
             migrationBuilder.DropTable(
                 name: "Medewerkers");
+
+            migrationBuilder.DropTable(
+                name: "Onderhoud_taken");
 
             migrationBuilder.DropTable(
                 name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Gasten");
+
+            migrationBuilder.DropTable(
+                name: "Attracties");
 
             migrationBuilder.DropTable(
                 name: "Gebruikers");
