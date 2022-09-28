@@ -11,15 +11,29 @@ public class DatabaseContext : DbContext{
     public DbSet<Reservering> Reservations {get;set;} = null!;
     public DbSet<GastInfo> GuestInfo {get;set;} = null!;
 
-    public async Task<bool> Boek(GCNotificationStatus g, Attractie a, DateTimeBereik d){
-        return true;
+    public async Task<bool> Boek(Gast g, Attractie a, DateTimeBereik d){
+        var result = Task<bool>.Run(()=> {
+            if(a.reservering == null){
+                var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d};
+                reservering.ReservedAttractions.Add(a);
+                g.reservering.Add(reservering);
+                return true;
+            }
+            return false;
+        });
+        return await result;
         
     }
 
     protected override void OnModelCreating(ModelBuilder builder){
         //Attractie
-            var AttractionConfig = builder.Entity<Medewerker>();
+            var AttractionConfig = builder.Entity<Attractie>();
             AttractionConfig.ToTable("Attracties");
+            AttractionConfig.OwnsMany(ondr => ondr.OnderhoudPunten);
+        //Onderhoud
+            var MaintenanceConfig = builder.Entity<Onderhoud>();
+            MaintenanceConfig.ToTable("Onderhoud_taken");
+            MaintenanceConfig.OwnsOne(attr => attr.Target);
         //Medewerker
             var StaffConfig = builder.Entity<Medewerker>();
             StaffConfig.ToTable("Medewerkers");
@@ -28,7 +42,6 @@ public class DatabaseContext : DbContext{
             UserConfig.ToTable("Gebruikers");
             //UserConfig.HasData(new Gebruiker("GaryV2"));
             UserConfig.HasKey(k => k.Email);
-
         //Gast
             var GuestConfig = builder.Entity<Gast>();
             GuestConfig.ToTable("Gasten");
