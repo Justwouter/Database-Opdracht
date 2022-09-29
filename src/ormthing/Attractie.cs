@@ -8,6 +8,8 @@ public class Attractie{
 
     public Reservering? reservering;
 
+    public readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
+
     public Attractie(String Naam){
         this.Naam = Naam;
     }
@@ -28,7 +30,7 @@ public class Attractie{
     private async Task<bool> OnderhoudBezigOpTijdstip(DatabaseContext c, DateTimeBereik dt){
         var result = Task<bool>.Run(() => {
             foreach(Onderhoud task in c.Maintenance.AsEnumerable()){
-                if(task.Target == this){
+                if(task.Target.Id == this.Id){
                     if(task.VindtPlaatsTijdens.Overlapt(dt)){
                         return true;
                     }
@@ -41,17 +43,12 @@ public class Attractie{
     }
 
     private async Task<bool> ReservatieOpTijdstip(DatabaseContext c, DateTimeBereik dt){
+        //Arrow code let's go!
         var result = Task<bool>.Run(() =>{
-            foreach(Reservering task in c.Reservations.AsEnumerable()){
-                if(task.ReservedAttractions.Contains(this)){
-                    foreach(Attractie attr in task.ReservedAttractions.AsEnumerable()){
-                        if(attr.Naam == this.Naam){
-                            if(attr.reservering != null && attr.reservering.VindtPlaatsTijdens.Overlapt(dt)){
-                                return true;
-                            }
-                        }
-                    }
-                }
+            var AttractieHere = c.Attractions.Single(a => a.Id == this.Id);
+            c.Entry(AttractieHere).Reference(r => r.reservering).Load();
+            if(AttractieHere.reservering != null && AttractieHere.reservering.VindtPlaatsTijdens.Overlapt(dt)){
+                return true;
             }
             return false;
         });
@@ -62,4 +59,6 @@ public class Attractie{
         // }
         // return false;
     }
+
+    
 }

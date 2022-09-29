@@ -12,17 +12,27 @@ public class DatabaseContext : DbContext{
     public DbSet<GastInfo> GuestInfo {get;set;} = null!;
 
     public async Task<bool> Boek(Gast g, Attractie a, DateTimeBereik d){
-        var result = Task<bool>.Run(()=> {
-            if(a.reservering == null){
-                var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d};
-                reservering.ReservedAttractions.Add(a);
-                g.reservering.Add(reservering);
-                return true;
-            }
-            return false;
-        });
-        return await result;
-        
+        using var transaction = this.Database.BeginTransaction();
+        await a.Semaphore.WaitAsync();
+        try { 
+            var result = Task<bool>.Run(()=> {
+                if(a.reservering == null){
+                    var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d};
+                    reservering.ReservedAttractions.Add(a);
+                    g.reservering.Add(reservering);
+                    g.Credits -= 1;
+                    this.SaveChanges();
+                    return true;
+                }
+                return false;
+            });
+            var res = await result;
+            transaction.Commit();
+            return res; 
+        }
+        finally { 
+            a.Semaphore.Release(); 
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder builder){
