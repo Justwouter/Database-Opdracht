@@ -12,7 +12,7 @@ public class Attractie{
         this.Naam = Naam;
     }
 
-    public Attractie(){}
+    protected Attractie(){}
 
     public async Task<bool> OnderhoudBezig(DatabaseContext c){
         return await OnderhoudBezigOpTijdstip(c,new DateTimeBereik{Begin = DateTime.Now, Eind = DateTime.Now});

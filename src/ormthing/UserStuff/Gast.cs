@@ -5,7 +5,8 @@ public class Gast : Gebruiker{
     public DateTime EersteBezoek {get;set;}
     public DateTime GeboorteDatum {get;set;}
     public int Credits {get;set;}
-    public Gast? Begeleider;
+    public Gast? Begeleider {get;set;}
+    public Gast? Begeleid {get;set;}
     public Attractie? FavorieteAttractie {get;set;}
     public GastInfo GastInformatie;
     public int GastinfoId {get;set;}

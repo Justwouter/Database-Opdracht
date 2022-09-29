@@ -11,7 +11,7 @@ public class GastInfo{
         this.Gast = gast;
     }
 
-    public GastInfo(){}
+    protected GastInfo(){}
 
     
 }

@@ -37,7 +37,7 @@ public class DatabaseContext : DbContext{
             MaintenanceConfig.HasKey(k => k.Id);
             MaintenanceConfig.HasOne(attr => attr.Target)
                 .WithMany(maint => maint.OnderhoudPunten)
-                .HasForeignKey(k => k.Id); //one to many with Attractie?
+                .HasForeignKey(k => k.Id).IsRequired(); //one to many with Attractie?
 
         //Medewerker
             var StaffConfig = builder.Entity<Medewerker>();
@@ -52,10 +52,14 @@ public class DatabaseContext : DbContext{
         //Gast
             var GuestConfig = builder.Entity<Gast>();
             GuestConfig.ToTable("Gasten");
+            GuestConfig.HasOne(g => g.Begeleider)
+                .WithOne(g => g.Begeleid); //Zero or one with itself
 
         //reservering 
             var ReservationsConfig = builder.Entity<Reservering>();
             ReservationsConfig.OwnsOne(res => res.VindtPlaatsTijdens);
+            ReservationsConfig.HasMany(a => a.ReservedAttractions)
+                .WithOne(r => r.reservering); //One or Zero to many with Attractie?
 
         //Gastinfo
             var GuestInfoconfig = builder.Entity<GastInfo>();
@@ -71,6 +75,7 @@ public class DatabaseContext : DbContext{
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder){
         var pcname = Environment.MachineName;
+        Console.WriteLine(pcname);
         builder.UseSqlServer("Server="+pcname+"\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
         //builder.UseSqlServer("Server=DESKTOP-PRAETOR\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
     }
