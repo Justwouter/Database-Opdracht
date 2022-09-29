@@ -17,12 +17,14 @@ try{
     Set-Location "$projectLocationParseString"
 
     #Check if the default parameter is used
-    if($args[0] -eq "-d"){
-        dotnet ef migrations add
-    }
-    else {
-        $migration_name=$args[0]
-        dotnet ef migrations add $migration_name
+    if( -not($args.Contains(("-u")))){
+        if($args[0] -eq "-d"){
+            dotnet ef migrations add
+        }
+        else {
+            $migration_name=$args[0]
+            dotnet ef migrations add $migration_name
+        }
     }
     dotnet ef database update
 }
