@@ -31,21 +31,29 @@ class DemografischRapport : Rapport
         return ret;
     }
     private async Task<int> AantalGebruikers() => await Task<int>.Run(() => {return context.Users.Count();});
-    private async Task<bool> AlleGastenHebbenReservering() => await Task<bool>.Run(() =>{return context.Guests.Where<Gast>(gast => gast.reservering.Count() > 0).Count() == context.Guests.Count();}); //Incredibly slow.
+    private async Task<bool> AlleGastenHebbenReservering() => await Task<bool>.Run(() =>{return context.Guests.Where<Gast>(gast => gast.reservering.Count() > 0).Count() == context.Guests.Count();});
     private async Task<int> AantalSinds(DateTime sinds) => await Task<int>.Run(() => {return context.Guests.Where<Gast>(gast => gast.EersteBezoek > sinds).Count();});
     private async Task<Gast> GastBijEmail(string email) => await Task<Gast>.Run(() =>{return context.Guests.First<Gast>(gast => gast.Email == email);}); 
     private async Task<Gast?> GastBijGeboorteDatum(DateTime d) => await Task<Gast>.Run(() =>{return context.Guests.First<Gast>(gast => gast.GeboorteDatum == d);});
 
     private async Task<double> PercentageBejaarden() => await Task<double>.Run(() => {return((double)(context.Guests.Where<Gast>(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now)/365.25)>75).Count())/(double)(context.Guests.Count()))*100;});
-
-    //private async Task<double> PercentageBejaarden() => await Task<double>.Run(() => {return((double)(context.Guests.Where<Gast>(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now)/365.25)>75).Count())/(double)(context.Guests.Count()))*100;});
     //Amount of people older than 75/amount of users times 100 for precentage. Because the initial fraction is < 1 both values need to be cast to double otherwise the method will always return 0.
+
     private async Task<int> HoogsteLeeftijd() => await Task<int>.Run(() => {return context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();});
     private IEnumerable<Gast> Blut(IEnumerable<Gast> g) => g.Where(g => g.Credits < 1);
     //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
-    private async Task<Tuple<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => {return new List<(Gast, int)>{(g.Select(f => f), g.Select(f => f.reservering.Count()))};});
 
-
+    private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => { List<(Gast,int)> l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reservering.Count()))); return l1;});
+    //I couldn't figure out how to assign stuff in a lambda so here is the band-aid method
+    private async Task<List<Tuple<Gast,int>>> GastMetActiviteit2(IEnumerable<Gast> g){ 
+        return await Task<int>.Run(() => {
+            List<Tuple<Gast,int>> l1 = new List<Tuple<Gast, int>>();
+            foreach(Gast ga in g){
+                l1.Add(Tuple.Create(ga, ga.reservering.Count()));
+            }
+            return l1;
+        });
+    }
 
     private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.EersteBezoek < DateTime.Now).Count();}); //Just to check
     
