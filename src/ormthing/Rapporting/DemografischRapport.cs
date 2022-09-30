@@ -43,18 +43,10 @@ class DemografischRapport : Rapport
     private IEnumerable<Gast> Blut(IEnumerable<Gast> g) => g.Where(g => g.Credits < 1);
     //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
 
-    private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => { List<(Gast,int)> l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reservering.Count()))); return l1;});
-    //I couldn't figure out how to assign stuff in a lambda so here is the band-aid method
-    private async Task<List<Tuple<Gast,int>>> GastMetActiviteit2(IEnumerable<Gast> g){ 
-        return await Task<int>.Run(() => {
-            List<Tuple<Gast,int>> l1 = new List<Tuple<Gast, int>>();
-            foreach(Gast ga in g){
-                l1.Add(Tuple.Create(ga, ga.reservering.Count()));
-            }
-            return l1;
-        });
-    }
-
+    private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => {var l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reservering.Count()))); return l1;});
+    //I couldn't figure out how to assign stuff in a lambda so here is the band-aid solution
+    //Also who came up with the List<()> notation.
+    
     private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.EersteBezoek < DateTime.Now).Count();}); //Just to check
     
     //private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
