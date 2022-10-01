@@ -16,10 +16,10 @@ public class DatabaseContext : DbContext{
         await a.Semaphore.WaitAsync();
         try { 
             var result = Task<bool>.Run(()=> {
-                if(a.reservering == null){
+                if(!a.Reserveringen.Any(r => r.VindtPlaatsTijdens.Overlapt(d))){
                     var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d};
-                    reservering.ReservedAttractions.Add(a);
-                    g.reservering.Add(reservering);
+                    reservering.ReservedAttraction = a;
+                    g.reserveringen.Add(reservering);
                     g.Credits -= 1;
                     this.SaveChanges();
                     return true;
@@ -64,12 +64,14 @@ public class DatabaseContext : DbContext{
             GuestConfig.ToTable("Gasten");
             GuestConfig.HasOne(g => g.Begeleider)
                 .WithOne(g => g.Begeleid); //Zero or one with itself
+            GuestConfig.HasMany(r => r.reserveringen)
+                .WithOne(g => g.gast);
 
         //reservering 
             var ReservationsConfig = builder.Entity<Reservering>();
             ReservationsConfig.OwnsOne(res => res.VindtPlaatsTijdens);
-            ReservationsConfig.HasMany(a => a.ReservedAttractions)
-                .WithOne(r => r.reservering); //One or Zero to many with Attractie?
+            ReservationsConfig.HasOne(a => a.ReservedAttraction)
+                .WithMany(r => r.Reserveringen); //One or Zero to many with Attractie?
 
         //Gastinfo
             var GuestInfoconfig = builder.Entity<GastInfo>();

@@ -6,7 +6,7 @@ public class Attractie{
 
     public List<Onderhoud> OnderhoudPunten = new List<Onderhoud>();
 
-    public Reservering? reservering;
+    public List<Reservering> Reserveringen = new List<Reservering>();
 
     public readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
 
@@ -46,9 +46,12 @@ public class Attractie{
         //Arrow code let's go!
         var result = Task<bool>.Run(() =>{
             var AttractieHere = c.Attractions.Single(a => a.Id == this.Id);
-            c.Entry(AttractieHere).Reference(r => r.reservering).Load();
-            if(AttractieHere.reservering != null && AttractieHere.reservering.VindtPlaatsTijdens.Overlapt(dt)){
-                return true;
+            c.Entry(AttractieHere).Collection(r => r.Reserveringen).Load();
+            var OurReservations = c.Entry(AttractieHere).Collection(r => r.Reserveringen).Query().Where(r => r.ReservedAttraction.Id == this.Id);
+            foreach(var reservation in OurReservations){
+                if(reservation.VindtPlaatsTijdens.Overlapt(dt)){
+                    return true;
+                }
             }
             return false;
         });
