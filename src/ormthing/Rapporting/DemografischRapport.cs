@@ -47,7 +47,7 @@ class DemografischRapport : Rapport
     //I couldn't figure out how to assign stuff in a lambda so here is the band-aid solution
     //Also who came up with the List<()> notation.
     
-    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reserveringen.Where(k => k.ReservedAttraction.Id == gast.FavorieteAttractie.Id).Count() > (gast.reserveringen.Count()/2)).Count();}); 
+    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.reserveringen.Where(k => gast.FavorieteAttractie !=null && k.ReservedAttraction.Id == gast.FavorieteAttractie.Id ).Count() > (gast.reserveringen.Count()/2)).Count();}); 
     
     //private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
     //Check if guests have a favorite, check if they have/had reservations and if so, check if their favorite attraction was included in any reservation.
