@@ -26,7 +26,7 @@ class DemografischRapport : Rapport
         // foreach (var dagAantal in dagAantallen)
         //     ret += $"{ dagAantal.dag }: { new string('#', (int)(dagAantal.aantal / (double)totaal * 20)) }\n";
 
-        ret += $"{ await FavorietCorrect() } gasten hebben de favoriete attractie inderdaad het vaakst bezocht. \n";
+        ret += $"{ await FavorietCorrect() } gast(en) hebben de favoriete attractie inderdaad het vaakst bezocht. \n";
 
         return ret;
     }
@@ -47,7 +47,7 @@ class DemografischRapport : Rapport
     //I couldn't figure out how to assign stuff in a lambda so here is the band-aid solution
     //Also who came up with the List<()> notation.
     
-    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.EersteBezoek < DateTime.Now).Count();}); //Just to check
+    private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reserveringen.Where(k => k.ReservedAttraction.Id == gast.FavorieteAttractie.Id).Count() > (gast.reserveringen.Count()/2)).Count();}); 
     
     //private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.FavorieteAttractie !=null).Where(gast => gast.reservering.Count() > 0).Where(gast => gast.reservering.Any(r => r.ReservedAttractions.Contains(gast.FavorieteAttractie))).Count();});
     //Check if guests have a favorite, check if they have/had reservations and if so, check if their favorite attraction was included in any reservation.

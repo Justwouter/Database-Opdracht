@@ -49,7 +49,7 @@ public class DatabaseContext : DbContext{
                 .WithMany(maint => maint.OnderhoudPunten)
                 .HasForeignKey(k => k.Id).IsRequired(); //one to many with Attractie?
 
-        //Medewerker
+        //Medewerkerusing Microsoft.EntityFrameworkCore;
             var StaffConfig = builder.Entity<Medewerker>();
             StaffConfig.ToTable("Medewerkers");
 
@@ -89,6 +89,5 @@ public class DatabaseContext : DbContext{
         var pcname = Environment.MachineName;
         Console.WriteLine(pcname);
         builder.UseSqlServer("Server="+pcname+"\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
-        //builder.UseSqlServer("Server=DESKTOP-PRAETOR\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
     }
 }

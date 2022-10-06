@@ -58,6 +58,14 @@ public class MainClass
                     nieuweGast.FavorieteAttractie = await Willekeurig<Attractie>(c);
                 c.Guests.Add(nieuweGast);
             }
+
+
+            Gast gary = new Gast("Gary@hhs.nl") { GeboorteDatum = DateTime.Now, EersteBezoek = DateTime.Now, Credits = 200};
+            gary.FavorieteAttractie = c.Attractions.ToList()[0];
+            gary.reserveringen.Add(new Reservering() { ReservedAttraction = c.Attractions.ToList()[0]});
+            gary.reserveringen.Add(new Reservering() { ReservedAttraction = c.Attractions.ToList()[0]});
+            c.Guests.Add(gary);
+
             c.SaveChanges();
 
             for (int i = 0; i < 10; i++)
