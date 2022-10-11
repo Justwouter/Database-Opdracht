@@ -3,7 +3,6 @@ using System;
 using DBOpdracht;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,32 +11,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ormthing.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220929084234_Two")]
-    partial class Two
+    [Migration("20221011095546_One")]
+    partial class One
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
 
             modelBuilder.Entity("DBOpdracht.Attractie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("reserveringId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("reserveringId");
 
                     b.ToTable("Attracties", (string)null);
                 });
@@ -46,9 +34,7 @@ namespace ormthing.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -58,7 +44,7 @@ namespace ormthing.Migrations
             modelBuilder.Entity("DBOpdracht.Gebruiker", b =>
                 {
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Email");
 
@@ -68,7 +54,7 @@ namespace ormthing.Migrations
             modelBuilder.Entity("DBOpdracht.Onderhoud", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -79,18 +65,21 @@ namespace ormthing.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("GastId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReservedAttractionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("gastEmail")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReservedAttractionId");
 
                     b.HasIndex("gastEmail");
 
@@ -102,35 +91,33 @@ namespace ormthing.Migrations
                     b.HasBaseType("DBOpdracht.Gebruiker");
 
                     b.Property<string>("BegeleiderEmail")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Credits")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("EersteBezoek")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("FavorieteAttractieId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("GastinfoId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("GeboorteDatum")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasIndex("BegeleiderEmail")
-                        .IsUnique()
-                        .HasFilter("[BegeleiderEmail] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("FavorieteAttractieId");
 
                     b.HasIndex("GastinfoId")
-                        .IsUnique()
-                        .HasFilter("[GastinfoId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Gasten", (string)null);
                 });
@@ -142,21 +129,12 @@ namespace ormthing.Migrations
                     b.ToTable("Medewerkers", (string)null);
                 });
 
-            modelBuilder.Entity("DBOpdracht.Attractie", b =>
-                {
-                    b.HasOne("DBOpdracht.Reservering", "reservering")
-                        .WithMany("ReservedAttractions")
-                        .HasForeignKey("reserveringId");
-
-                    b.Navigation("reservering");
-                });
-
             modelBuilder.Entity("DBOpdracht.GastInfo", b =>
                 {
                     b.OwnsOne("DBOpdracht.Coordinate", "coordinate", b1 =>
                         {
                             b1.Property<int>("GastInfoId")
-                                .HasColumnType("int");
+                                .HasColumnType("INTEGER");
 
                             b1.HasKey("GastInfoId");
 
@@ -182,8 +160,14 @@ namespace ormthing.Migrations
 
             modelBuilder.Entity("DBOpdracht.Reservering", b =>
                 {
+                    b.HasOne("DBOpdracht.Attractie", "ReservedAttraction")
+                        .WithMany("Reserveringen")
+                        .HasForeignKey("ReservedAttractionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DBOpdracht.Gast", "gast")
-                        .WithMany("reservering")
+                        .WithMany("reserveringen")
                         .HasForeignKey("gastEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -191,7 +175,7 @@ namespace ormthing.Migrations
                     b.OwnsOne("DBOpdracht.DateTimeBereik", "VindtPlaatsTijdens", b1 =>
                         {
                             b1.Property<int>("ReserveringId")
-                                .HasColumnType("int");
+                                .HasColumnType("INTEGER");
 
                             b1.HasKey("ReserveringId");
 
@@ -200,6 +184,8 @@ namespace ormthing.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ReserveringId");
                         });
+
+                    b.Navigation("ReservedAttraction");
 
                     b.Navigation("VindtPlaatsTijdens")
                         .IsRequired();
@@ -216,7 +202,7 @@ namespace ormthing.Migrations
                     b.HasOne("DBOpdracht.Gebruiker", null)
                         .WithOne()
                         .HasForeignKey("DBOpdracht.Gast", "Email")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DBOpdracht.Attractie", "FavorieteAttractie")
@@ -241,13 +227,15 @@ namespace ormthing.Migrations
                     b.HasOne("DBOpdracht.Gebruiker", null)
                         .WithOne()
                         .HasForeignKey("DBOpdracht.Medewerker", "Email")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("DBOpdracht.Attractie", b =>
                 {
                     b.Navigation("OnderhoudPunten");
+
+                    b.Navigation("Reserveringen");
                 });
 
             modelBuilder.Entity("DBOpdracht.GastInfo", b =>
@@ -255,16 +243,11 @@ namespace ormthing.Migrations
                     b.Navigation("Gast");
                 });
 
-            modelBuilder.Entity("DBOpdracht.Reservering", b =>
-                {
-                    b.Navigation("ReservedAttractions");
-                });
-
             modelBuilder.Entity("DBOpdracht.Gast", b =>
                 {
                     b.Navigation("Begeleid");
 
-                    b.Navigation("reservering");
+                    b.Navigation("reserveringen");
                 });
 #pragma warning restore 612, 618
         }

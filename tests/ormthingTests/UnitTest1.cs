@@ -1,10 +1,13 @@
 namespace ormthingTests;
+using DBOpdracht;
 
 public class UnitTest1
 {
-    [Fact]
-    public void Test1()
-    {
-
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TestBoekRejects(bool IsReserved){
+        DatabaseContext DBC = new DatabaseContext();
+        
     }
 }

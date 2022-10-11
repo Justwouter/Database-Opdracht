@@ -79,7 +79,7 @@ public class DatabaseContext : DbContext{
             GuestInfoconfig.HasKey(k => k.Id);
             GuestInfoconfig.HasOne(g => g.Gast)
                 .WithOne(gi => gi.GastInformatie)
-                .HasForeignKey<Gast>(g => g.GastinfoId); //One to one with Gast/gastinfo?
+                .HasForeignKey<Gast>(g => g.GastinfoId); //One to one with Gast/gastinfo
 
         
         
@@ -88,6 +88,7 @@ public class DatabaseContext : DbContext{
     protected override void OnConfiguring(DbContextOptionsBuilder builder){
         var pcname = Environment.MachineName;
         Console.WriteLine(pcname);
-        builder.UseSqlServer("Server="+pcname+"\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
+        //builder.UseSqlServer("Server="+pcname+"\\SQLEXPRESS;Initial Catalog=Week4DB;Integrated Security=true");
+        builder.UseSqlite("Data Source=Week4DB.sqlite");
     }
 }
