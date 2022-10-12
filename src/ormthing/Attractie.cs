@@ -2,7 +2,7 @@ namespace DBOpdracht;
 
 public class Attractie{
     public int Id {get;set;}
-    public String Naam = null!;
+    public String Naam {get;set;}   = null!;
 
     public List<Onderhoud> OnderhoudPunten = new List<Onderhoud>();
 

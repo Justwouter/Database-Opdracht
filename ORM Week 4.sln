@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{07677980-D4D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ormthing", "src\ormthing\ormthing.csproj", "{3A1BB525-E03D-4638-8E4C-0F4059ECEA51}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C433B330-EFF5-4CC3-BD3A-F819F6AE3AAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ormthingTests", "tests\ormthingTests\ormthingTests.csproj", "{E260FF8A-267B-4DF2-B17C-35B54E35C43B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{3A1BB525-E03D-4638-8E4C-0F4059ECEA51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A1BB525-E03D-4638-8E4C-0F4059ECEA51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A1BB525-E03D-4638-8E4C-0F4059ECEA51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E260FF8A-267B-4DF2-B17C-35B54E35C43B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E260FF8A-267B-4DF2-B17C-35B54E35C43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E260FF8A-267B-4DF2-B17C-35B54E35C43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E260FF8A-267B-4DF2-B17C-35B54E35C43B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3A1BB525-E03D-4638-8E4C-0F4059ECEA51} = {07677980-D4DD-4CD3-B8D6-95014148394E}
+		{E260FF8A-267B-4DF2-B17C-35B54E35C43B} = {C433B330-EFF5-4CC3-BD3A-F819F6AE3AAD}
 	EndGlobalSection
 EndGlobal

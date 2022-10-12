@@ -53,7 +53,7 @@ public class MainClass
             for (int i = 0; i < 10000; i++)
             {
                 var geboren = DateTime.Now.AddDays(-random.Next(36500));
-                var nieuweGast = new Gast($"gast{i}@mail.com") { GeboorteDatum = geboren, EersteBezoek = geboren + (DateTime.Now - geboren) * random.NextDouble(), Credits = random.Next(5) };
+                var nieuweGast = new Gast($"gast{i}@mail.com") { GeboorteDatum = geboren, EersteBezoek = geboren + (DateTime.Now - geboren) * random.NextDouble(), Credits = random.Next(5), Id = i+1};
                 if (random.NextDouble() > .6)
                     nieuweGast.FavorieteAttractie = await Willekeurig<Attractie>(c);
                 c.Guests.Add(nieuweGast);
@@ -63,7 +63,7 @@ public class MainClass
             Gast gary = new Gast("Gary@hhs.nl") { GeboorteDatum = DateTime.Now, EersteBezoek = DateTime.Now, Credits = 200};
             gary.FavorieteAttractie = c.Attractions.ToList()[0];
             gary.reserveringen.Add(new Reservering() { ReservedAttraction = c.Attractions.ToList()[0]});
-            gary.reserveringen.Add(new Reservering() { ReservedAttraction = c.Attractions.ToList()[0]});
+            //gary.reserveringen.Add(new Reservering() { ReservedAttraction = c.Attractions.ToList()[0]});
             c.Guests.Add(gary);
 
             c.SaveChanges();
@@ -80,3 +80,15 @@ public class MainClass
         }
     }
 }
+
+
+
+// SELECT TOP (2000) [Email]
+//       ,[Id]
+//       ,[EersteBezoek]
+//       ,[GeboorteDatum]
+//       ,[Credits]
+//       ,[FavorieteAttractieId]
+//       ,[GastinfoId]
+//       ,[BegeleiderEmail]
+//  FROM [Week4DB].[dbo].[Gasten]
