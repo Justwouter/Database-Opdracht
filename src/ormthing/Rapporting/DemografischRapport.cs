@@ -21,10 +21,10 @@ class DemografischRapport : Rapport
         ret += $"De oudste gast heeft een leeftijd van { await HoogsteLeeftijd() } \n";
 
         ret += "De verdeling van de gasten per dag is als volgt: \n";
-        // var dagAantallen = await VerdelingPerDag();
-        // var totaal = dagAantallen.Select(t => t.aantal).Max();
-        // foreach (var dagAantal in dagAantallen)
-        //     ret += $"{ dagAantal.dag }: { new string('#', (int)(dagAantal.aantal / (double)totaal * 20)) }\n";
+        var dagAantallen = await VerdelingPerDag();
+        var totaal = dagAantallen.Select(t => t.aantal).Max();
+        foreach (var dagAantal in dagAantallen)
+            ret += $"{ dagAantal.dag }: { new string('#', (int)(dagAantal.aantal / (double)totaal * 20)) }\n";
 
         ret += $"{ await FavorietCorrect() } gast(en) hebben de favoriete attractie inderdaad het vaakst bezocht. \n";
 
@@ -41,11 +41,14 @@ class DemografischRapport : Rapport
 
     private async Task<int> HoogsteLeeftijd() => await Task<int>.Run(() => {return context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();});
     private IEnumerable<Gast> Blut(IEnumerable<Gast> g) => g.Where(g => g.Credits < 1);
-    //private async Task<(string dag, int aantal)[]> VerdelingPerDag() => ;
 
-    private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => {var l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reserveringen.Count()))); return l1;});
+    private async Task<(string dag, int aantal)[]> VerdelingPerDag() => await Task<(string, int)>.Run(() => {return context.Guests.Select(g => g.EersteBezoek).ToList().Select((g) => g.DayOfWeek).GroupBy((g) => g.ToString()).Select((g) => (g.Key, g.Count())).ToArray();}); 
+
+    private async Task<List<(Gast g, int aantal)>> GastenMetActiviteit(IEnumerable<Gast> gast) => await Task<List<(Gast g, int aantal)>>.Run(() => {return gast.Select(a => (a, a.reserveringen.Count())).ToList();});
+    //private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => {var l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reserveringen.Count()))); return l1;});
     //I couldn't figure out how to assign stuff in a lambda so here is the band-aid solution
     //Also who came up with the List<()> notation.
+    //Never Mind figured it out.
     
     private async Task<int> FavorietCorrect() => await Task<int>.Run(() => {return context.Guests.Where(gast => gast.reserveringen.Where(k => gast.FavorieteAttractie !=null && k.ReservedAttraction.Id == gast.FavorieteAttractie.Id ).Count() > (gast.reserveringen.Count()/2)).Count();}); 
     
