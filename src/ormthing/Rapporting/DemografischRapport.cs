@@ -42,7 +42,7 @@ class DemografischRapport : Rapport
     private async Task<int> HoogsteLeeftijd() => await Task<int>.Run(() => {return context.Guests.Select(gast => (int)(EF.Functions.DateDiffDay(gast.GeboorteDatum, DateTime.Now) / 365.25)).Max();});
     private IEnumerable<Gast> Blut(IEnumerable<Gast> g) => g.Where(g => g.Credits < 1);
 
-    private async Task<(string dag, int aantal)[]> VerdelingPerDag() => await Task<(string, int)>.Run(() => {return context.Guests.Select(g => g.EersteBezoek).ToList().Select((g) => g.DayOfWeek).GroupBy((g) => g.ToString()).Select((g) => (g.Key, g.Count())).ToArray();}); 
+    private async Task<(string dag, int aantal)[]> VerdelingPerDag() => await Task<(string, int)>.Run(() => {return context.Guests.Select(g => g.EersteBezoek).ToList().Select((d) => d.DayOfWeek).GroupBy((dow) => dow.ToString()).Select((g) => (g.Key, g.Count())).ToArray();}); 
 
     private async Task<List<(Gast g, int aantal)>> GastenMetActiviteit(IEnumerable<Gast> gast) => await Task<List<(Gast g, int aantal)>>.Run(() => {return gast.Select(a => (a, a.reserveringen.Count())).ToList();});
     //private async Task<List<(Gast,int)>> GastMetActiviteit(IEnumerable<Gast> g) => await Task<List<(Gast,int)>>.Run(() => {var l1 = new List<(Gast, int)>(); g.ToList().ForEach(ga => l1.Add((ga, ga.reserveringen.Count()))); return l1;});
