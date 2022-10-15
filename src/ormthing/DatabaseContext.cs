@@ -17,8 +17,7 @@ public class DatabaseContext : DbContext{
         try { 
             var result = Task<bool>.Run(()=> {
                 if(!a.Reserveringen.Any(r => r.VindtPlaatsTijdens.Overlapt(d))){
-                    var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d};
-                    reservering.ReservedAttraction = a;
+                    var reservering = new Reservering{gast = g, VindtPlaatsTijdens = d, ReservedAttraction = a};
                     g.reserveringen.Add(reservering);
                     g.Credits -= 1;
                     this.SaveChanges();
